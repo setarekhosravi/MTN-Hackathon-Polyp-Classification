@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Polyp Classification</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #121212;
+            color: #febe10;
+            margin: 0;
+            padding: 0;
+        }
+        h1 {
+            margin-top: 20px;
+            color: #febe10;
+            font-size: 28px;
+        }
+        .container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3);
+            color: #000;
+        }
+        .form-container {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+        input[type="text"],
+        input[type="number"],
+        textarea,
+        input[type="file"] {
+            width: 100%;
+            padding: 12px;
+            font-size: 16px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            box-sizing: border-box;
+        }
+        input[type="submit"] {
+            background-color: #febe10;
+            color: #000;
+            font-size: 18px;
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        input[type="submit"]:hover {
+            background-color: #e0a800;
+        }
+        .section {
+            margin-top: 30px;
+            padding: 20px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .section-title {
+            font-size: 20px;
+            margin-bottom: 10px;
+            color: #febe10;
+        }
+        .report-content {
+            font-size: 16px;
+            line-height: 1.6;
+        }
+        .recommendations-list {
+            list-style: disc;
+            margin: 10px 0 0 20px;
+        }
+        .error {
+            color: red;
+            font-size: 16px;
+            margin-top: 20px;
+        }
+        .result {
+            font-size: 18px;
+            color: #000;
+        }
+        .disclaimer {
+            margin-top: 30px;
+            font-size: 14px;
+            color: red;
+            font-style: italic;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Polyp Classification</h1>
+        <p>Upload an image of a polyp to classify it and generate a medical report.</p>
+
+        <form method="POST" enctype="multipart/form-data" class="form-container">
+            <input type="text" name="patient_name" placeholder="Enter Patient Name" required>
+            <input type="number" name="patient_age" placeholder="Enter Patient Age" required min="0">
+            <textarea name="medical_history" placeholder="Enter Medical History" rows="4" required></textarea>
+            <input type="file" name="file" accept="image/*" required>
+            <input type="submit" value="Upload and Predict">
+        </form>
+
+        {% if error %}
+            <div class="error">⚠️ {{ error }}</div>
+        {% endif %}
+
+        {% if result %}
+            <div class="section">
+                <div class="section-title">Prediction Result</div>
+                <p class="result"><strong>Type:</strong> {{ result }}</p>
+                <p class="result"><strong>Probability:</strong> {{ probability|round(2) }}</p>
+            </div>
+
+            {% if report %}
+                <div class="section">
+                    <div class="section-title">Generated Medical Report</div>
+                    <div class="report-content">
+                        {{ report|safe }}
+                    </div>
+                </div>
+            {% endif %}
+
+            {% if recommendations %}
+                <div class="section">
+                    <div class="section-title">Recommendations</div>
+                    <ul class="recommendations-list">
+                        {% for recommendation in recommendations %}
+                            <li>{{ recommendation }}</li>
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+        {% endif %}
+
+        <div class="disclaimer">
+            This is an AI-generated result. For medical advice, please consult a doctor.
+        </div>
+    </div>
+</body>
+</html>
